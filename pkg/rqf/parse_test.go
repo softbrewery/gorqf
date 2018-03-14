@@ -23,15 +23,33 @@ var _ = Describe("Parse", func() {
 			}`
 
 			{
-				filter, err := Parse(rawJson, nil)
+				parser := NewParser()
+				filter, err := parser.Parse(rawJson)
+
 				Expect(err).To(BeNil())
 				Expect(filter).NotTo(BeNil())
 			}
 
 			{
-				filter, err := Parse(rawJson, joi.AnySchema().Allow(""))
+				parser := NewParser()
+				parser.FieldsSchema(
+					joi.String().Allow("id", "title", "isbn"),
+				)
+				filter, err := parser.Parse(rawJson)
+
 				Expect(err).To(BeNil())
 				Expect(filter).NotTo(BeNil())
+			}
+
+			{
+				parser := NewParser()
+				parser.FieldsSchema(
+					joi.String().Allow("id", "title"),
+				)
+				filter, err := parser.Parse(rawJson)
+
+				Expect(err).ToNot(BeNil())
+				Expect(filter).To(BeNil())
 			}
 		})
 	})
