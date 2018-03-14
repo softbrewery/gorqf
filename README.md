@@ -1,2 +1,8 @@
 # gorqf
-Go library to parse and validate REST query filters
+
+[![Build Status](https://travis-ci.org/softbrewery/gorqf.svg?branch=master)](https://travis-ci.org/softbrewery/gorqf)
+
+## Install
+```shell
+$ go get github.com/softbrewery/gorqf
+```
