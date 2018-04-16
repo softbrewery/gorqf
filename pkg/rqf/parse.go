@@ -95,15 +95,6 @@ func (p *Parser) Parse(rawFilter string) (*Filter, error) {
 	return filter, nil
 }
 
-// MustParse parses a raw json and panics on error
-func (p *Parser) MustParse(rawFilter string) *Filter {
-	filter, err := p.Parse(rawFilter)
-	if err != nil {
-		panic(err)
-	}
-	return filter
-}
-
 // normalizeFilter will filter the 'filter' query parameter from the string
 func normalizeFilter(rawFilter string) (string, error) {
 	stripped := rawFilter
