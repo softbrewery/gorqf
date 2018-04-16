@@ -38,7 +38,7 @@ var _ = Describe("Parse", func() {
 		})
 
 		It("Should fail if a filter has invalid escaped url", func() {
-			filter := `http://app.myapp.com/api/v1/books?filter=%fail%22fields%22%3A%5B%22id%22%2C%22title%22%2C%22desc%22%5D%7D`
+			filter := `http://app.myapp.com/api/v1/books?filter=%f%22fields%22%3A%5B%22id%22%2C%22title%22%2C%22desc%22%5D%7D`
 			parser, err := NewParser().Parse(filter)
 
 			Expect(parser).To(BeNil())
