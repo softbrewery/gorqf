@@ -29,6 +29,22 @@ var _ = Describe("Parse", func() {
 			Expect(err).To(BeNil())
 		})
 
+		It("Should parse a filter as escaped url", func() {
+			filter := `http://app.myapp.com/api/v1/books?filter=%7B%22fields%22%3A%5B%22id%22%2C%22title%22%2C%22desc%22%5D%7D`
+			parser, err := NewParser().Parse(filter)
+
+			Expect(parser).NotTo(BeNil())
+			Expect(err).To(BeNil())
+		})
+
+		It("Should fail if a filter has invalid escaped url", func() {
+			filter := `http://app.myapp.com/api/v1/books?filter=%fail%22fields%22%3A%5B%22id%22%2C%22title%22%2C%22desc%22%5D%7D`
+			parser, err := NewParser().Parse(filter)
+
+			Expect(parser).To(BeNil())
+			Expect(err).NotTo(BeNil())
+		})
+
 		It("Should parse a filter as url query", func() {
 			filter := `filter={"fields":["id","title","desc"]}`
 			parser, err := NewParser().Parse(filter)
