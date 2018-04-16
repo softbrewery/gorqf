@@ -16,7 +16,7 @@ var (
 
 // Parser ...
 type Parser struct {
-	fieldsSchema *joi.Schema
+	fieldSchema  *joi.Schema
 	orderSchema  *joi.Schema
 	limitSchema  *joi.Schema
 	offsetSchema *joi.Schema
@@ -28,9 +28,27 @@ func NewParser() *Parser {
 	return &Parser{}
 }
 
-// FieldsSchema ...
-func (p *Parser) FieldsSchema(fieldsSchema joi.Schema) *Parser {
-	p.fieldsSchema = &fieldsSchema
+// FieldSchema ...
+func (p *Parser) FieldSchema(fieldSchema joi.Schema) *Parser {
+	p.fieldSchema = &fieldSchema
+	return p
+}
+
+// OrderSchema ...
+func (p *Parser) OrderSchema(orderSchema joi.Schema) *Parser {
+	p.orderSchema = &orderSchema
+	return p
+}
+
+// LimitSchema ...
+func (p *Parser) LimitSchema(limitSchema joi.Schema) *Parser {
+	p.limitSchema = &limitSchema
+	return p
+}
+
+// OffsetSchema ...
+func (p *Parser) OffsetSchema(offsetSchema joi.Schema) *Parser {
+	p.offsetSchema = &offsetSchema
 	return p
 }
 
@@ -46,8 +64,29 @@ func (p *Parser) Parse(rawFilter string) (*Filter, error) {
 		return nil, err
 	}
 
-	if joi.IsSet(p.fieldsSchema) {
-		err := joi.Validate(filter.Fields, joi.Array().Items(*p.fieldsSchema))
+	if joi.IsSet(p.fieldSchema) {
+		err := joi.Validate(filter.Fields, joi.Slice().Items(*p.fieldSchema))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if joi.IsSet(p.orderSchema) {
+		err := joi.Validate(filter.Order, joi.Slice().Items(*p.orderSchema))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if joi.IsSet(p.limitSchema) {
+		err := joi.Validate(filter.Limit, *p.limitSchema)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if joi.IsSet(p.offsetSchema) {
+		err := joi.Validate(filter.Offset, *p.offsetSchema)
 		if err != nil {
 			return nil, err
 		}
@@ -69,9 +108,9 @@ func (p *Parser) MustParse(rawFilter string) *Filter {
 func normalizeFilter(rawFilter string) (string, error) {
 	stripped := rawFilter
 
-	index := strings.Index(stripped, "?filter=")
+	index := strings.Index(stripped, "filter=")
 	if index != -1 {
-		stripped = stripped[index+8:]
+		stripped = stripped[index+7:]
 	}
 
 	decoded, err := url.QueryUnescape(stripped)
