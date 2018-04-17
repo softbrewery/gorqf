@@ -1,6 +1,8 @@
 package rqf_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/softbrewery/gojoi/pkg/joi"
@@ -238,6 +240,47 @@ var _ = Describe("Parse", func() {
 			filter, err := parser.Parse(jsonFilter)
 
 			Expect(err).ToNot(BeNil())
+			Expect(filter).To(BeNil())
+		})
+	})
+
+	Describe("WhereSchema", func() {
+
+		It("Should succeed if where is not set", func() {
+			parser := NewParser()
+
+			jsonFilter := `{"where":{"isbn": "A_ISBN"}}`
+			filter, err := parser.Parse(jsonFilter)
+
+			Expect(err).To(BeNil())
+			Expect(filter.Where).To(Equal(map[string]interface{}{"isbn": "A_ISBN"}))
+		})
+
+		It("Should succeed if where is matching", func() {
+			schema := joi.Any()
+
+			parser := NewParser()
+			parser.WhereSchema(schema)
+
+			jsonFilter := `{"where":{"isbn": "A_ISBN"}}`
+			filter, err := parser.Parse(jsonFilter)
+
+			Expect(err).To(BeNil())
+			Expect(filter.Where).To(Equal(map[string]interface{}{"isbn": "A_ISBN"}))
+		})
+
+		It("Should fail if where is not matching", func() {
+			schema := joi.Any().Forbidden()
+
+			parser := NewParser()
+			parser.WhereSchema(schema)
+
+			jsonFilter := `{"where":{"isbn": "A_ISBN"}}`
+			filter, err := parser.Parse(jsonFilter)
+
+			fmt.Println(filter)
+
+			Expect(err).NotTo(BeNil())
 			Expect(filter).To(BeNil())
 		})
 	})

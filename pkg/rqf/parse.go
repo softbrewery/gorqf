@@ -52,6 +52,12 @@ func (p *Parser) OffsetSchema(offsetSchema joi.Schema) *Parser {
 	return p
 }
 
+// WhereSchema ...
+func (p *Parser) WhereSchema(whereSchema joi.Schema) *Parser {
+	p.whereSchema = &whereSchema
+	return p
+}
+
 // Parse parses a raw json filter into Filter object
 func (p *Parser) Parse(rawFilter string) (*Filter, error) {
 	normalizedFilter, err := normalizeFilter(rawFilter)
@@ -87,6 +93,13 @@ func (p *Parser) Parse(rawFilter string) (*Filter, error) {
 
 	if joi.IsSet(p.offsetSchema) {
 		err := joi.Validate(filter.Offset, *p.offsetSchema)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if joi.IsSet(p.whereSchema) {
+		err := joi.Validate(filter.Where, *p.whereSchema)
 		if err != nil {
 			return nil, err
 		}

@@ -2,11 +2,11 @@ package rqf
 
 // Filter keeps info about the filter
 type Filter struct {
-	Fields []string
-	Order  []string
-	Limit  int
-	Offset int
-	Where  interface{}
+	Fields []string               `json:"fields"`
+	Order  []string               `json:"order"`
+	Limit  int                    `json:"limit"`
+	Offset int                    `json:"offset"`
+	Where  map[string]interface{} `json:"where"`
 }
 
 // NewFilter creates a new filter object

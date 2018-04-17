@@ -21,9 +21,10 @@ parser := rqf.NewParser()
 jsonFilter := `
 {
     "fields": ["-_id","isbn"],
-    "order":["isbn ASC"],
-    "limit":1,
-    "offset":1
+    "order": ["isbn ASC"],
+    "limit": 1,
+    "offset": 1,
+    "where" {"isbn": "0-306-40615-2"}
 }`
 
 // Parse the filter
@@ -47,14 +48,17 @@ parser.OrderSchema( joi.String().Allow("isbn", "isbn ASC", "isbn DESC") )
 
 // only allow paging between 10 and 100 items
 parser.LimitSchema( joi.Int().Min(10).Max(100) )
+
+// Don't allow where condition
+parser.WhereSchema( joi.Any().Forbidden() )
             
 // Json filter comming from rest request
 jsonFilter := `
 {
     "fields": ["isbn", "name"],
-    "order":["isbn ASC"],
-    "limit":25,
-    "offset":1
+    "order": ["isbn ASC"],
+    "limit": 25,
+    "offset": 1
 }`
 
 // Parse the filter

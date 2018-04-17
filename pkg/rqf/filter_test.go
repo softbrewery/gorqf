@@ -66,7 +66,7 @@ var _ = Describe("Filter", func() {
 		})
 
 		It("Should not be empty when where is set", func() {
-			filter := Filter{Where: map[string]string{}}
+			filter := Filter{Where: map[string]interface{}{}}
 			Expect(filter.IsEmpty()).To(BeFalse())
 		})
 	})
